@@ -27,15 +27,18 @@ public :
 		this->start=pixelsStart;
 		this->block_size=blocksize;
 		full_size=imageWidth;
-		block_label=block_label;
+		this->block_label=block_label;
 		this->image = image;
 		assignPixelsToBlock();
 	}
-	void Split(int min_size,int max_x,int max_y);
+	void Split(int min_size);
 	float variance();
 	void assignPixelsToBlock();
-	void mergeNeighbor(int directionx,int directiony,std::vector<Pixel*>::const_iterator starting_point,int max_x,int max_y);
-	void Merge(int min_size,int max_x,int max_y);
+	void mergeNeighbor(int directionx,int directiony,std::vector<Pixel*>::const_iterator starting_point);
+	void Merge(int min_size);
+	void assignLabel(int blocklabel);
+	void fillWithColor(int r,int g,int b);
+	bool iterator_inside_block(std::vector<Pixel*>::const_iterator iter);
 	void colorFinalBlock();
 };
 
@@ -49,5 +52,6 @@ public:
 	Image(){}
 	void fromFile(const char *filename);
 	void save(const char *filename);
+	void colorFromMerge();
 	void SplitAndMerge(int min_size);
 };
