@@ -31,7 +31,7 @@ public :
 		this->image = image;
 		assignPixelsToBlock();
 	}
-	void Split(int min_size);
+	void Split(int min_size,bool force);
 	float variance();
 	void assignPixelsToBlock();
 	void mergeNeighbor(int directionx,int directiony,std::vector<Pixel*>::const_iterator starting_point);
@@ -40,6 +40,7 @@ public :
 	void fillWithColor(int r,int g,int b);
 	bool iterator_inside_block(std::vector<Pixel*>::const_iterator iter);
 	void colorFinalBlock();
+	double harmonyWithNeighbours();
 };
 
 class Image{
@@ -54,4 +55,6 @@ public:
 	void save(const char *filename);
 	void colorFromMerge();
 	void SplitAndMerge(int min_size);
+	float computeHarmony();
+
 };

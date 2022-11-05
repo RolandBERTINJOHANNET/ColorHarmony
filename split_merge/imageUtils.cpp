@@ -1,4 +1,4 @@
-
+#include "../harmony_solli/harmony_solli.cpp"
 #include "imageUtils.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
@@ -11,10 +11,10 @@
 
 
 
-void Block::Split(int min_size){
+void Block::Split(int min_size,bool force){
 	//std::cout<<"entered split"<<std::endl;
 	//std::cout<<image<<std::endl;
-	if(sqrt(variance())>20 && block_size>min_size){
+	if((sqrt(variance())>35 && block_size>min_size)||force){
 		//std::cout<<"entered if "<<std::endl;
 		//each block added to image blocks
 		for(int x=0;x<2;x++){
@@ -29,7 +29,7 @@ void Block::Split(int min_size){
 											image->blocks.size(),
 											image));
 					//std::cout<<"calling Split on "<<image->blocks.size()<<"th block "<<std::endl;
-					image->blocks[image->blocks.size()-1]->Split(min_size);
+					image->blocks[image->blocks.size()-1]->Split(min_size,false);
 				}
 			}
 
@@ -178,6 +178,62 @@ void Block::Merge(int min_size){
 	}
 }
 
+double Block::harmonyWithNeighbours(){
+	//do four whiles to get the top, bottom,right and left neighbors with checks on image boundaries 
+	//					(also the non-segfault end-of-line boundaries)
+	//					and for each neighbor, add the harmony score to accumulator, weighed by size of compared label.
+	int totalMult=0;
+	double totalHarm=0;
+	int loop_helper[2]={-1,1};
+	//top and bottom neighbors
+	std::vector<Pixel*>::const_iterator it = start;
+	bool foundNeighbor=true;
+	for(int i=0;i<2;i++){
+		it = start;
+		while((*it)->block_label==block_label){
+			it+=loop_helper[i]*full_size;
+			//check for top and bottom segfault
+			if(it<image->pixels.begin() || it>image->pixels.end()){
+				foundNeighbor=false;
+				break;
+			}
+		}
+		if(foundNeighbor){//then (it) points to a neighbor pixel
+			double harm = compute_harmony((*it)->r,(*it)->g,(*it)->b,
+										(*start)->r,(*start)->g,(*start)->b);
+			std::cout<<(*it)->block_label<<" is a vertical neighbor to "<<block_label<<" with harmony : "<<harm<<std::endl;
+			std::cout<<" and "<<(it-start)/full_size<<" lines of differences "<<std::endl;
+			totalHarm+=compute_harmony((*it)->r,(*it)->g,(*it)->b,
+										(*start)->r,(*start)->g,(*start)->b) * block_size;
+			totalMult+=block_size;
+		}
+	}
+	//left and right neighbors
+	foundNeighbor=true;
+	for(int i=0;i<2;i++){
+		it = start;
+		int start_line=(it-image->pixels.begin())/full_size;
+		while((*it)->block_label==block_label){
+			it+=loop_helper[i];
+			//check for line change
+			if(((it-image->pixels.begin())/full_size) !=start_line){
+				foundNeighbor=false;
+				break;
+			}
+		}
+		if(foundNeighbor){//then (it) points to a neighbor pixel
+			double harm = compute_harmony((*it)->r,(*it)->g,(*it)->b,
+										(*start)->r,(*start)->g,(*start)->b);
+			std::cout<<(*it)->block_label<<" is a horizontal neighbor to "<<block_label<<" with harmony : "<<harm<<std::endl;
+			std::cout<<" and "<<(it-start)<<" pixels of differences "<<std::endl;
+			totalHarm+=compute_harmony((*it)->r,(*it)->g,(*it)->b,
+										(*start)->r,(*start)->g,(*start)->b) * block_size;
+			totalMult+=block_size;
+		}
+	}
+	return totalHarm/double(totalMult);
+}
+
 void Image::fromFile(const char *filename){
 	int chan;
 	uint8_t *data = stbi_load(filename, &w, &h, &chan, 3);
@@ -229,9 +285,65 @@ void Image::colorFromMerge(){
 void Image::SplitAndMerge(int min_size){
 	blocks.resize(0);
 	blocks.push_back(new Block(pixels.begin(), w, w, blocks.size(), this));
-	blocks[0]->Split(min_size);//splits all blocks recursively
+	blocks[0]->Split(min_size,true);//splits all blocks recursively
 	for(auto block : blocks){
 		block->Merge(min_size);
 	}
 	colorFromMerge();
+}
+
+float Image::computeHarmony(){
+	//total harmony accumulator
+	double totalHarm = 0.;
+	unsigned int totalMult = 0;//for normalization
+	// : get the vector of vectors of blocks (grouped by label)
+	std::vector<std::vector<Block*>> blockGroups;
+	for(int i=0;i<blocks.size();i++){
+		bool foundBlocks=false;
+		std::vector<Block*> blocksForThisLabel;
+		for(auto &block : blocks){
+			if(block->block_label==i){
+				if(foundBlocks==false){
+					foundBlocks=true;
+				}
+				blocksForThisLabel.push_back(block);
+			}
+		}
+		if(foundBlocks){
+			blockGroups.push_back(blocksForThisLabel);
+		}
+	}
+	//get size of each block group
+	std::vector<unsigned int> sizes;
+	for(auto list : blockGroups){
+		//get nb of pixels in the group
+		int sizeacc = 0;
+		for(auto block : list){
+			sizeacc+=pow(block->block_size,2);
+		}	
+		sizes.push_back(sizeacc);
+	}
+
+	for(int i=0;i<blockGroups.size();i++){
+		//if enough pixels, re-loop over all but present label, add the harmony scores to accumulator,weighed by block size.
+		if(sizes[i]>=pow((float)w/4.,2)){
+			auto list = blockGroups[i];
+			for(auto list2 : blockGroups){
+				if(list2[0]->block_label != list[0]->block_label){//don't garmonize with self
+					//function is in the harmony_solli.cpp file.
+					double hmn = compute_harmony((*(list2[0]->start))->r,(*(list2[0]->start))->g,(*(list2[0]->start))->b,
+									(*(list[0]->start))->r,(*(list[0]->start))->g,(*(list[0]->start))->b);
+					std::cout<<"harmony between blocks "<<list[0]->block_label<<" and "<<list2[0]->block_label<<" is : "<<hmn<<std::endl;
+					totalHarm += hmn * sizes[i];
+					totalMult+=sizes[i];
+				}
+			}
+		}else{
+			//otherwise, get harmony only locally, with neighbors.
+			totalHarm += blockGroups[i][0]->harmonyWithNeighbours();
+		}
+	}
+	
+	totalHarm /=double(totalMult);//(should get score back between 0 and 1)
+	return totalHarm;
 }
