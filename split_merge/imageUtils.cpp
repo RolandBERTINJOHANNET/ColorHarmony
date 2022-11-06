@@ -14,7 +14,7 @@
 void Block::Split(int min_size,bool force){
 	//std::cout<<"entered split"<<std::endl;
 	//std::cout<<image<<std::endl;
-	if((sqrt(variance())>35 && block_size>min_size)||force){
+	if((sqrt(variance())>30 && block_size>min_size)||force){
 		//std::cout<<"entered if "<<std::endl;
 		//each block added to image blocks
 		for(int x=0;x<2;x++){
@@ -187,13 +187,13 @@ double Block::harmonyWithNeighbours(){
 	int loop_helper[2]={-1,1};
 	//top and bottom neighbors
 	std::vector<Pixel*>::const_iterator it = start;
-	bool foundNeighbor=true;
 	for(int i=0;i<2;i++){
+		bool foundNeighbor=true;
 		it = start;
 		while((*it)->block_label==block_label){
 			it+=loop_helper[i]*full_size;
 			//check for top and bottom segfault
-			if(it<image->pixels.begin() || it>image->pixels.end()){
+			if(it<image->pixels.begin() || it>=image->pixels.end()){
 				foundNeighbor=false;
 				break;
 			}
@@ -201,22 +201,22 @@ double Block::harmonyWithNeighbours(){
 		if(foundNeighbor){//then (it) points to a neighbor pixel
 			double harm = compute_harmony((*it)->r,(*it)->g,(*it)->b,
 										(*start)->r,(*start)->g,(*start)->b);
-			std::cout<<(*it)->block_label<<" is a vertical neighbor to "<<block_label<<" with harmony : "<<harm<<std::endl;
-			std::cout<<" and "<<(it-start)/full_size<<" lines of differences "<<std::endl;
+			//std::cout<<(*it)->block_label<<" is a vertical neighbor to "<<block_label<<" with harmony : "<<harm<<std::endl;
+			//std::cout<<" and "<<(it-start)/full_size<<" lines of differences "<<std::endl;
 			totalHarm+=compute_harmony((*it)->r,(*it)->g,(*it)->b,
 										(*start)->r,(*start)->g,(*start)->b) * block_size;
 			totalMult+=block_size;
 		}
 	}
 	//left and right neighbors
-	foundNeighbor=true;
 	for(int i=0;i<2;i++){
+		bool foundNeighbor=true;
 		it = start;
 		int start_line=(it-image->pixels.begin())/full_size;
 		while((*it)->block_label==block_label){
 			it+=loop_helper[i];
 			//check for line change
-			if(((it-image->pixels.begin())/full_size) !=start_line){
+			if(((it-image->pixels.begin())/full_size) !=start_line || it<image->pixels.begin()){
 				foundNeighbor=false;
 				break;
 			}
@@ -224,8 +224,8 @@ double Block::harmonyWithNeighbours(){
 		if(foundNeighbor){//then (it) points to a neighbor pixel
 			double harm = compute_harmony((*it)->r,(*it)->g,(*it)->b,
 										(*start)->r,(*start)->g,(*start)->b);
-			std::cout<<(*it)->block_label<<" is a horizontal neighbor to "<<block_label<<" with harmony : "<<harm<<std::endl;
-			std::cout<<" and "<<(it-start)<<" pixels of differences "<<std::endl;
+			//std::cout<<(*it)->block_label<<" is a horizontal neighbor to "<<block_label<<" with harmony : "<<harm<<std::endl;
+			//std::cout<<" and "<<(it-start)<<" pixels of differences "<<std::endl;
 			totalHarm+=compute_harmony((*it)->r,(*it)->g,(*it)->b,
 										(*start)->r,(*start)->g,(*start)->b) * block_size;
 			totalMult+=block_size;
@@ -237,6 +237,7 @@ double Block::harmonyWithNeighbours(){
 void Image::fromFile(const char *filename){
 	int chan;
 	uint8_t *data = stbi_load(filename, &w, &h, &chan, 3);
+	std::cout<<filename<<std::endl;
 	for(int i=0;i<h;i++){
 		for(int j=0;j<w*3;j+=3){
 			pixels.push_back(new Pixel(i,j/3,data[i*w*3+j],data[i*w*3+j+1],data[i*w*3+j+2],0));
@@ -333,7 +334,7 @@ float Image::computeHarmony(){
 					//function is in the harmony_solli.cpp file.
 					double hmn = compute_harmony((*(list2[0]->start))->r,(*(list2[0]->start))->g,(*(list2[0]->start))->b,
 									(*(list[0]->start))->r,(*(list[0]->start))->g,(*(list[0]->start))->b);
-					std::cout<<"harmony between blocks "<<list[0]->block_label<<" and "<<list2[0]->block_label<<" is : "<<hmn<<std::endl;
+					//std::cout<<"harmony between blocks "<<list[0]->block_label<<" and "<<list2[0]->block_label<<" is : "<<hmn<<std::endl;
 					totalHarm += hmn * sizes[i];
 					totalMult+=sizes[i];
 				}
@@ -342,7 +343,7 @@ float Image::computeHarmony(){
 			//otherwise, get harmony only locally, with neighbors.
 			totalHarm += blockGroups[i][0]->harmonyWithNeighbours();
 		}
-	}
+	}	
 	
 	totalHarm /=double(totalMult);//(should get score back between 0 and 1)
 	return totalHarm;
