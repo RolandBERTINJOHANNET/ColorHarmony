@@ -1,6 +1,0 @@
-- implémenter l'upsampling avec carte de différences
-- rechercher d'autres méthodes pour classification de type d'harmonie
-- ajouter plus d'images à la base de données
-- le cas échouant, implémenter l'interface pour donner nous-mêmes une vérité de terrain
-- appliquer le calcul de scores d'harmonie sur ces nouvelles classes
-- faire une ANOVA sur les résultats 
