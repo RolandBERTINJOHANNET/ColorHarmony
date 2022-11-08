@@ -49,7 +49,7 @@ def getHarmonyType(img):
 		if len(bins)==1:
 			return "mono"
 		elif len(bins)==2:
-			return "comp" if abs(bins[0]-bins[1])>110 else "analog"
+			return "comp" if abs(bins[0]-bins[1])>90 else "analog"
 		elif len(bins)==3:
 			return "triad"
 		else:
