@@ -10,6 +10,8 @@ from scipy.cluster.vq import kmeans
 import numpy as np
 import colorconversion
 
+#it might also do to pick color harmony based on hue frequencies in 8 bins on the chroma circle
+
 def getHarmonyType(img):
 	#extract hues and select those that matter
 	hues = []
@@ -56,14 +58,13 @@ def getHarmonyType(img):
 			return "rectangle"
 
 
-
-data_dir_small = "C:/Users/Orlando/Desktop/temp_harmonisation/script_database/databaseOut2"
-data_dir_big = "C:/Users/Orlando/Desktop/temp_harmonisation/script_database/databaseOut"
-out_dir =  "C:/Users/Orlando/Desktop/temp_harmonisation/script_database/harmonies_database/"
+data_dir_small = os.path.join(os.path.dirname(os.path.abspath(__file__)),"..\\script_database\\databaseOut3")
+data_dir_big = os.path.join(os.path.dirname(os.path.abspath(__file__)),"..\\script_database\\databaseOut2")
+out_dir =  os.path.join(os.path.dirname(os.path.abspath(__file__)),"..\\harmonies_database\\")
 
 if __name__ == "__main__":
 	i=0
-	for file in os.listdir("databaseOut2"):
+	for file in os.listdir(data_dir_small):
 		img = Image.open(data_dir_small+"/"+file).convert("RGB")
 		harmonyType = getHarmonyType(img)
 		if harmonyType is not None:
@@ -71,4 +72,3 @@ if __name__ == "__main__":
 			print(i,"images done : ",out_dir+harmonyType+"/"+file)
 			i+=1
 			img.save(out_dir+harmonyType+"/"+file)
-	

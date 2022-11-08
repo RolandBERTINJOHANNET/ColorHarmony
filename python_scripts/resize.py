@@ -1,13 +1,13 @@
 from PIL import Image, ImageOps
 import os
 
-dir = "C:/Users/Orlando/Desktop/script_database/databaseOut"
-dirOut = "C:/Users/Orlando/Desktop/script_database/databaseOut2"
+dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),"..\\script_database\\databaseOut2")
+dirOut = os.path.join(os.path.dirname(os.path.abspath(__file__)),"..\\script_database\\databaseOut3")
 size = 50
 print("running")
 
 for file in os.listdir(dir):
-    if file.endswith(".jpg"):
+    if file.endswith(".jpg") or file.endswith(".png"):
         img = Image.open(os.path.join(dir, file))
         img = img.resize((size,size))
         print("doing ",os.path.join(dirOut, file)[:-4]+".jpg")
