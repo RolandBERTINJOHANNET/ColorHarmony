@@ -9,7 +9,7 @@ using std::filesystem::directory_iterator;
 using namespace std;
 
 int main(void){
-    string path = "../harmonies_database/rectangle/";
+    string path = "../harmonies_database/mono/";
     std::ofstream f;
     f.open("harmonies_data.csv",std::ios::app);
 
@@ -26,7 +26,7 @@ int main(void){
 			std::cout<<"SplitAndMerge"<<std::endl;
 			double harm = img.computeHarmony();
 			std::cout<<"total harmony is : "<<harm<<std::endl;
-			f<<"rectangle,"<<harm<<std::endl;
+			f<<"mono,"<<harm<<std::endl;
 		}
 	}
 	f.close();
