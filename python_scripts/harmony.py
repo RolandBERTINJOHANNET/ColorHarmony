@@ -25,18 +25,23 @@ def getHarmonyType(img):
 		lch = (LCH_color.lch_l,LCH_color.lch_c,LCH_color.lch_h)
 		if lch[0]>20 and lch[1]>20:
 			hues.append(lch[2])
+			#take colors that pop more into account
+			if lch[0]>80:
+				hues.append(lch[2])
+			if lch[1]>85:
+				hues.append(lch[2])
 		
 	#kmeans
-	if(len(hues)>1):
+	if(len(hues)>1):#if at least some hues are associated with enough saturation and luminance
 		hues = np.reshape(np.array(hues),(len(hues),1))
 		km = KMeans(n_clusters=4).fit(hues)
 		pred = km.predict(hues)
-		print("prediction : ",pred)
 		for k in range(4):
 			print("cluster",k,"has",len(np.where(pred==k)[0]),"and center",km.cluster_centers_[k])
-		return
-		colors = list(colors)
 		
+		#take only the sufficiently big clusters.
+		colors = [km.cluster_centers_[i] for i in range(4) if len(np.where(pred==i)[0])>((1./7.)*len(hues))]
+		print("colors : ",colors)
 		
 		#grouping of colors
 		bins=[]
@@ -47,12 +52,13 @@ def getHarmonyType(img):
 			colors.remove(hue)
 			j=0
 			while j<len(colors):
-				if abs(hue - colors[j])<55:
+				if abs(hue - colors[j])<30:
 					similar_colors.append(colors[j])
 					colors.remove(colors[j])
 				else:
 					j+=1
 			bins.append(np.mean(similar_colors))
+		print("after similarity check : ",bins)
 		
 		
 	
@@ -77,6 +83,7 @@ if __name__ == "__main__":
 		img = Image.open(data_dir_small+"/"+file).convert("RGB")
 		harmonyType = getHarmonyType(img)
 		if harmonyType is not None:
+			print("final choice was ",harmonyType)
 			img = Image.open(data_dir_big+"/"+file).convert("RGB")
 			print(i,"images done : ",out_dir+harmonyType+"/"+file)
 			i+=1
