@@ -6,11 +6,13 @@ Created on Mon Oct 31 14:45:42 2022
 """
 import os
 import PIL.Image as Image
-from scipy.cluster.vq import kmeans
+from sklearn.cluster import KMeans
 import numpy as np
-import colorconversion
 
-#it might also do to pick color harmony based on hue frequencies in 8 bins on the chroma circle
+from colormath.color_objects import LCHabColor, sRGBColor
+from colormath.color_conversions import convert_color
+
+
 
 def getHarmonyType(img):
 	#extract hues and select those that matter
@@ -18,14 +20,21 @@ def getHarmonyType(img):
 	img = np.array(img)
 	img = np.reshape(img,(img.shape[0]*img.shape[1],3))
 	for pixel in np.array(img):
-		LAB_color = colorconversion.RGB_to_LAB(pixel[0],pixel[1],pixel[2])
-		LCH_color = colorconversion.LAB_to_LCH(LAB_color[0],LAB_color[1],LAB_color[2])
-		if LCH_color[0]>0.1 and LCH_color[1]>0.1:
-			hues.append(LCH_color[2])
+		rgb = sRGBColor(pixel[0],pixel[1],pixel[2])
+		LCH_color = convert_color(rgb, LCHabColor)
+		lch = (LCH_color.lch_l,LCH_color.lch_c,LCH_color.lch_h)
+		if lch[0]>20 and lch[1]>20:
+			hues.append(lch[2])
 		
 	#kmeans
 	if(len(hues)>1):
-		colors,_ = kmeans(hues,4)
+		hues = np.reshape(np.array(hues),(len(hues),1))
+		km = KMeans(n_clusters=4).fit(hues)
+		pred = km.predict(hues)
+		print("prediction : ",pred)
+		for k in range(4):
+			print("cluster",k,"has",len(np.where(pred==k)[0]),"and center",km.cluster_centers_[k])
+		return
 		colors = list(colors)
 		
 		
