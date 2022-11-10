@@ -11,51 +11,9 @@ import numpy as np
 
 from colormath.color_objects import LCHabColor, sRGBColor
 from colormath.color_conversions import convert_color
+from colorExtraction import *
 
-def getMainColors_kmeans(img):
-	#extract hues and select those that matter
-	hues = []
-	img = np.array(img)
-	img = np.reshape(img,(img.shape[0]*img.shape[1],3))/255.
-	for pixel in np.array(img):
-		rgb = sRGBColor(pixel[0],pixel[1],pixel[2])
-		LCH_color = convert_color(rgb, LCHabColor)
-		lch = (LCH_color.lch_l,LCH_color.lch_c,LCH_color.lch_h)
-		if lch[0]>20 and lch[1]>20:
-			hues.append(lch[2])
-		
-	#kmeans
-	if(len(hues)>500):#if enough hues are associated with enough saturation and luminance to give good estimate of color harmony
-		hues = np.reshape(np.array(hues),(len(hues),1))
-		km = KMeans(n_clusters=4).fit(hues)
-		pred = km.predict(hues)
-		#for k in range(4):
-			#print("cluster",k,"has",len(np.where(pred==k)[0]),"and center",km.cluster_centers_[k])
-		
-		#take only the sufficiently big clusters.
-		colors = [km.cluster_centers_[i] for i in range(4) if len(np.where(pred==i)[0])>100]
-		#print("colors : ",colors)
-		
-		#grouping of colors
-		bins=[]
-		i=0
-		while i<len(colors):
-			hue = colors[i]
-			similar_colors = [colors[i]]
-			colors.remove(hue)
-			j=0
-			while j<len(colors):
-				if abs(hue - colors[j])<65:
-					similar_colors.append(colors[j])
-					colors.remove(colors[j])
-				else:
-					j+=1
-			bins.append(np.mean(similar_colors))
-		#print("after similarity check : ",bins)
-		return bins
-	else:
-		print("skipped image")
-		return None
+
 
 
 def getHarmonyType(bins):
@@ -88,11 +46,12 @@ data_dir_small = os.path.join(os.path.dirname(os.path.abspath(__file__)),"..\\sc
 data_dir_big = os.path.join(os.path.dirname(os.path.abspath(__file__)),"..\\script_database\\databaseOut2")
 out_dir =  os.path.join(os.path.dirname(os.path.abspath(__file__)),"..\\harmonies_database\\")
 
+#big images must be 256 by 256 and small images must be 50 by 50 for this to work well
 if __name__ == "__main__":
 	i=0
 	for file in os.listdir(data_dir_small):
 		img = Image.open(data_dir_small+"/"+file).convert("RGB")
-		bins = getMainColors_kmeans(img)
+		bins = getMainColors_frequencies(img)
 		if bins is not None:
 			harmonyType = getHarmonyType(bins)
 			#print("final choice was ",harmonyType)
