@@ -12,9 +12,7 @@ import numpy as np
 from colormath.color_objects import LCHabColor, sRGBColor
 from colormath.color_conversions import convert_color
 
-
-
-def getHarmonyType(img):
+def getMainColors_kmeans(img):
 	#extract hues and select those that matter
 	hues = []
 	img = np.array(img)
@@ -23,12 +21,12 @@ def getHarmonyType(img):
 		rgb = sRGBColor(pixel[0],pixel[1],pixel[2])
 		LCH_color = convert_color(rgb, LCHabColor)
 		lch = (LCH_color.lch_l,LCH_color.lch_c,LCH_color.lch_h)
-		if lch[0]>20 and lch[1]>20:
+		if lch[0]>50 and lch[1]>50:
 			hues.append(lch[2])
 			#take colors that pop more into account
-			if lch[0]>80:
+			if lch[0]>85:
 				hues.append(lch[2])
-			if lch[1]>85:
+			if lch[1]>100:
 				hues.append(lch[2])
 		
 	#kmeans
@@ -36,12 +34,8 @@ def getHarmonyType(img):
 		hues = np.reshape(np.array(hues),(len(hues),1))
 		km = KMeans(n_clusters=4).fit(hues)
 		pred = km.predict(hues)
-		for k in range(4):
-			print("cluster",k,"has",len(np.where(pred==k)[0]),"and center",km.cluster_centers_[k])
-		
 		#take only the sufficiently big clusters.
 		colors = [km.cluster_centers_[i] for i in range(4) if len(np.where(pred==i)[0])>((1./7.)*len(hues))]
-		print("colors : ",colors)
 		
 		#grouping of colors
 		bins=[]
@@ -52,16 +46,18 @@ def getHarmonyType(img):
 			colors.remove(hue)
 			j=0
 			while j<len(colors):
-				if abs(hue - colors[j])<30:
+				if abs(hue - colors[j])<50:
 					similar_colors.append(colors[j])
 					colors.remove(colors[j])
 				else:
 					j+=1
 			bins.append(np.mean(similar_colors))
-		print("after similarity check : ",bins)
-		
-		
-	
+		return bins
+	else:
+		return None
+
+
+def getHarmonyType(bins):
 		#pick a harmony type
 		if len(bins)==1:
 			return "mono"
@@ -72,6 +68,20 @@ def getHarmonyType(img):
 		else:
 			return "rectangle"
 
+def draw_maincolors(img,bins):
+	last_line = np.zeros((np.array(img).shape[0],100,3))
+	for i in range(len(bins)):
+		lch = LCHabColor(60.,80.,bins[i])
+		RGB_color = convert_color(lch,sRGBColor)
+		rgb = [RGB_color.rgb_r,RGB_color.rgb_g,RGB_color.rgb_b]
+		for j in range(i*50,(i+1)*50):
+			for k in range(100):
+				last_line[j,k]=np.array(rgb) * 255
+	final = np.concatenate([np.array(img),last_line],axis=1)
+	return Image.fromarray(final.astype(np.uint8))
+
+
+
 
 data_dir_small = os.path.join(os.path.dirname(os.path.abspath(__file__)),"..\\script_database\\databaseOut3")
 data_dir_big = os.path.join(os.path.dirname(os.path.abspath(__file__)),"..\\script_database\\databaseOut2")
@@ -81,10 +91,12 @@ if __name__ == "__main__":
 	i=0
 	for file in os.listdir(data_dir_small):
 		img = Image.open(data_dir_small+"/"+file).convert("RGB")
-		harmonyType = getHarmonyType(img)
-		if harmonyType is not None:
-			print("final choice was ",harmonyType)
+		bins = getMainColors_kmeans(img)
+		print(np.array(img).shape)
+		if bins is not None:
+			harmonyType = getHarmonyType(bins)
 			img = Image.open(data_dir_big+"/"+file).convert("RGB")
+			img = draw_maincolors(img,bins)
 			print(i,"images done : ",out_dir+harmonyType+"/"+file)
 			i+=1
 			img.save(out_dir+harmonyType+"/"+file)
