@@ -49,14 +49,24 @@ out_dir =  os.path.join(os.path.dirname(os.path.abspath(__file__)),"..\\harmonie
 #big images must be 256 by 256 and small images must be 50 by 50 for this to work well
 if __name__ == "__main__":
 	i=0
-	for file in os.listdir(data_dir_small):
+	nb_conflicts = 0
+	for file in os.listdir(data_dir_small)[-100:]:
 		img = Image.open(data_dir_small+"/"+file).convert("RGB")
-		bins = getMainColors_frequencies(img)
-		if bins is not None:
-			harmonyType = getHarmonyType(bins)
-			#print("final choice was ",harmonyType)
-			img = Image.open(data_dir_big+"/"+file).convert("RGB")
-			img = draw_maincolors(img,bins)
-			print("\n",i,"images done : ",out_dir+harmonyType+"/"+file)
-			i+=1
-			img.save(out_dir+harmonyType+"/"+file)
+		bins_freq = getMainColors_frequencies(img)
+		img = Image.open(data_dir_small+"/"+file).convert("RGB")
+		bins_kmeans = getMainColors_kmeans(img)
+
+		if bins_freq is not None and bins_kmeans is not None:
+			freq_harmonyType = getHarmonyType(bins_freq)
+			kmeans_harmonyType = getHarmonyType(bins_kmeans)
+
+			if freq_harmonyType == kmeans_harmonyType:
+				img = Image.open(data_dir_big+"/"+file).convert("RGB")
+				img = draw_maincolors(img,bins_kmeans)
+				print("\n",i,"images done : ",out_dir+kmeans_harmonyType+"/"+file)
+				i+=1
+				img.save(out_dir+kmeans_harmonyType+"/"+file)
+			else:
+				print("disagreement between the methods")
+				nb_conflicts+=1
+	print("percentage of images where methods disagreed : ",100.*(nb_conflicts/float(len(os.listdir(data_dir_small)))))

@@ -16,7 +16,7 @@ def getMainColors_kmeans(img):
 		rgb = sRGBColor(pixel[0],pixel[1],pixel[2])
 		LCH_color = convert_color(rgb, LCHabColor)
 		lch = (LCH_color.lch_l,LCH_color.lch_c,LCH_color.lch_h)
-		if lch[0]>20 and lch[1]>20:
+		if lch[0]>10 and lch[1]>10:
 			hues.append(lch[2])
 		
 	#kmeans
@@ -58,7 +58,7 @@ def getMainColors_kmeans(img):
 
 
 		#take only the sufficiently big clusters.
-		bins = [b for (b,c) in zip(bins,bins_sizes) if c>100]
+		bins = [b for (b,c) in zip(bins,bins_sizes) if c>50]
 		#print("after elimination of small clusters : ",bins)
 		return bins
 	else:
@@ -75,7 +75,7 @@ def getMainColors_frequencies(img):
 		rgb = sRGBColor(pixel[0],pixel[1],pixel[2])
 		LCH_color = convert_color(rgb, LCHabColor)
 		lch = (LCH_color.lch_l,LCH_color.lch_c,LCH_color.lch_h)
-		if lch[0]>20 and lch[1]>20:
+		if lch[0]>10 and lch[1]>10:
 			hues.append(lch[2])
 
 
@@ -101,7 +101,7 @@ def getMainColors_frequencies(img):
 
 		#take only the sufficiently big clusters.
 		bins = [b for (b,c) in zip(colors,frequencies) if c>100]
-		print("after elimination of small bins : ",bins)
+		#print("after elimination of small bins : ",bins)
 		return bins
 	else:
 		print("skipped image")
