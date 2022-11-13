@@ -3,6 +3,8 @@
 
 const double pi = 3.141592653589793;
 
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!only RGB->LCH has been fixed yet !
+
 double gamma_expand(double value){
 	return value<=0.04045?(value/12.92)
 						:pow((value+0.055)/1.055, 2.4);
@@ -156,9 +158,9 @@ void RGB_to_LCH(int R, int G, int B, double *L, double *C, double *H){
 
 	//then to LCH
 
-	double var_H = (pi+atan2(b_,a))*(360./(2.*pi));  //Quadrant by signs, turned into degrees
-
-
+	double var_H = atan(b_/a) * (180./pi);
+	std::cout<<"var h : "<<var_H<<"with mod : "<<int(var_H)%360<<std::endl;
+	var_H = var_H>0?var_H:360+var_H;
 	*L = l;
 	*C = sqrt(a*a+b_*b_);
 	*H = var_H;
@@ -269,7 +271,7 @@ void LCH_to_LAB(double *L, double *a, double *b){
 //dernier fix à faire : la composante H ne semble pas bonne.
 int main(){
 	int r,g,b;
-	r=120;g=20;b=220;
+	r=1;g=20;b=220;
 	double l,c,h;
 	RGB_to_LCH(r,g,b,&l,&c,&h);
 	std::cout<<"lch : "<<l<<", "<<c<<", "<<h<<std::endl;
