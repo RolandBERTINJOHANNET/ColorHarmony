@@ -34,7 +34,7 @@ void compute_harmony_folder(string harmonyType,string fout){
 }
 
 void classify_harmony_folder(string harmonyType,string fout){
-	string path = "../script_database/databaseOut2/";
+	string path = "../script_database/databaseTemp/";
 	std::ofstream f;
     f.open(fout,std::ios::app);
 

@@ -3,6 +3,7 @@
 #include <string>
 #include <iostream>
 #include <algorithm>
+#include "utils.h"
 //choices made with split&merge in mind
 
 class Image;
@@ -56,5 +57,6 @@ public:
 	void colorFromMerge();
 	void SplitAndMerge(int min_size);
 	float computeHarmony();
+	std::string classifyHarmony();
 
 };
