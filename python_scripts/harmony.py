@@ -12,7 +12,7 @@ import numpy as np
 from colormath.color_objects import LCHabColor, sRGBColor
 from colormath.color_conversions import convert_color
 from colorExtraction import *
-
+import pandas as pd
 
 
 
@@ -39,7 +39,13 @@ def draw_maincolors(img,bins):
 	final = np.concatenate([np.array(img),last_line],axis=1)
 	return Image.fromarray(final.astype(np.uint8))
 
-
+def vote(vote1,vote2,vote3):#using votes 2 and 3 to check "impurities" in vote1
+	if vote1==vote2:
+		return vote1
+	elif vote1==vote3:
+		return vote1
+	else:
+		return "unknown"
 
 
 data_dir_small = os.path.join(os.path.dirname(os.path.abspath(__file__)),"..\\script_database\\databaseOut3")
@@ -50,23 +56,30 @@ out_dir =  os.path.join(os.path.dirname(os.path.abspath(__file__)),"..\\harmonie
 if __name__ == "__main__":
 	i=0
 	nb_conflicts = 0
-	for file in os.listdir(data_dir_small)[-100:]:
-		img = Image.open(data_dir_small+"/"+file).convert("RGB")
-		bins_freq = getMainColors_frequencies(img)
-		img = Image.open(data_dir_small+"/"+file).convert("RGB")
-		bins_kmeans = getMainColors_kmeans(img)
+	votes3 = pd.read_csv("../split_merge/harmony_types.csv")
+	votes3.columns = ["name","type"]
 
-		if bins_freq is not None and bins_kmeans is not None:
-			freq_harmonyType = getHarmonyType(bins_freq)
-			kmeans_harmonyType = getHarmonyType(bins_kmeans)
+	for file in os.listdir(data_dir_small):
+		if file in votes3["name"].values:
+			img = Image.open(data_dir_small+"/"+file).convert("RGB")
+			bins_freq = getMainColors_frequencies(img)
+			img = Image.open(data_dir_small+"/"+file).convert("RGB")
+			bins_kmeans = getMainColors_kmeans(img)
 
-			if freq_harmonyType == kmeans_harmonyType:
-				img = Image.open(data_dir_big+"/"+file).convert("RGB")
-				img = draw_maincolors(img,bins_kmeans)
-				print("\n",i,"images done : ",out_dir+kmeans_harmonyType+"/"+file)
-				i+=1
-				img.save(out_dir+kmeans_harmonyType+"/"+file)
-			else:
-				print("disagreement between the methods")
-				nb_conflicts+=1
+			if bins_freq is not None and bins_kmeans is not None:
+				vote1 = getHarmonyType(bins_freq)
+				vote2 = getHarmonyType(bins_kmeans)
+				vote3 = votes3.loc[votes3["name"]=="00000000_(2).jpg"]["type"].values[0]
+
+				print("votes : ",vote1,vote2,vote3)
+
+				result = vote(vote1,vote2,vote3)
+				print("result : ",result)
+				if result=="unknown":
+					nb_conflicts+=1
+				else:
+					img = Image.open(data_dir_big+"/"+file).convert("RGB")
+					print("\n",i,"images done : ",out_dir+result+"/"+file)
+					i+=1
+					img.save(out_dir+result+"/"+file)
 	print("percentage of images where methods disagreed : ",100.*(nb_conflicts/float(len(os.listdir(data_dir_small)))))

@@ -1,7 +1,7 @@
 from PIL import Image, ImageOps
 import os
 
-dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),"..\\script_database\\databaseOut2")
+dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),"..\\script_database\\databaseOut")
 dirOut = os.path.join(os.path.dirname(os.path.abspath(__file__)),"..\\script_database\\databaseOut3")
 size = 50
 print("running")
