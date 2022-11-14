@@ -1,8 +1,9 @@
 #include "converter.cpp"
 #include <math.h>
 
+
 double compute_deltaC(double C1, double H1, double C2, double H2){
-	return sqrt(pow(H1-H2,2) + pow((C1-C2)/1.46,2));
+	return sqrt(pow(abs(H1-H2),2) + pow(abs(C1-C2)/1.46,2));
 }
 
 double compute_HdeltaL(double L1, double L2){
@@ -18,7 +19,7 @@ double compute_Ec(double C1){
 }
 
 double compute_Hs(double H1){
-	return -0.08 - 0.14 * sin(H1+50) - 0.07 * sin(2*H1 + 90);
+	return -0.08 - 0.14 * sin(((pi)/180.)*(H1+50)) - 0.07 * sin(((pi)/180.)*(2*H1 + 90));
 }
 
 double compute_Ey(double L1, double H1){
@@ -44,6 +45,8 @@ double compute_harmony(int r1, int g1, int b1, int r2, int g2, int b2){
 	double L1,C1,H1,L2,C2,H2;
 	RGB_to_LCH(r1,g1,b1,&L1,&C1,&H1);
 	RGB_to_LCH(r2,g2,b2,&L2,&C2,&H2);
+	std::cout<<"1 : "<<L1<<", "<<C1<<", "<<H1<<std::endl;
+	std::cout<<"1 : "<<L2<<", "<<C2<<", "<<H2<<std::endl;
 	return Hc(C1,H1,C2,H2) + 
 			Hl(L1,L2) + 
 			Hh(L1,C1,H1,L2,C2,H2);
