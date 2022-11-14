@@ -10,7 +10,7 @@ double gamma_expand(double value){
 }
 double gamma_compress(double value){
 	return value<=0.0031308?(value*12.92)
-						:pow(value*1.055, 1./2.4)-0.055;
+						:1.055*pow(value, 1./2.4)-0.055;
 }
 unsigned char expand_to_byte(double value){
 	int oct = 255*value;
@@ -67,8 +67,6 @@ void RGB_to_LCH(int R, int G, int B, double *L, double *C, double *H){
 
 	//then to LCH
 
-	std::cout<<a<<", "<<b_<<std::endl;
-
 	double var_H = atan2(b_,a) * (180./pi);
 
 	var_H = var_H>0?var_H:360+var_H;
@@ -85,13 +83,9 @@ void LCH_to_RGB(double l, double C, double H, int *r, int *g, int *b){
 	//convert to LAB
 	double H_rad = ((pi)/180.)*H;
 
-	std::cout<<H<<" en radians : "<<H_rad<<std::endl;
-	
 	double L = l;
 	double a = C*cos(H_rad);
 	double b_ = C*sin(H_rad);
-
-	std::cout<<"lab : "<<l<<", "<<a<<", "<<b_<<", "<<std::endl;
 
 	//then convert to XYZ
 	
@@ -100,38 +94,19 @@ void LCH_to_RGB(double l, double C, double H, int *r, int *g, int *b){
 	double Y = 100.*LABfun_inv((L+16.)/116.) /100.;
 	double Z = 108.8840*LABfun_inv(  ((L+16.)/116.)-(b_/200.) ) /100.;
 
-	std::cout<<"xyz : "<<X<<", "<<Y<<", "<<Z<<", "<<std::endl;
-
 	//matrix multiplication
 	double R = 3.2406*X -1.5372*Y -0.4986*Z;
 	double G = -0.9689*X  +1.8758*Y +0.0415*Z;
 	double B = 0.0557*X -0.2040*Y +1.0570*Z;
 	
-	std::cout<<"rgb after matmul : "<<R<<", "<<G<<", "<<B<<std::endl;
-
 	//gamma compression
-	R = gamma_compress(R)/100.;
+	R = gamma_compress(R);
 	G = gamma_compress(G);
 	B = gamma_compress(B);
 
-
-	std::cout<<"rgb after gamma compress : "<<R<<", "<<G<<", "<<B<<std::endl;
 
 	//output
 	*r=expand_to_byte(R);
 	*g=expand_to_byte(G);
 	*b=expand_to_byte(B);
-}
-
-int main(){
-	int r,g,b;
-	r=250;g=60;b=70;
-	double l,c,h;
-
-	//RGB_to_LCH(r,g,b,&l,&c,&h);
-	//std::cout<<"lch : "<<l<<", "<<c<<", "<<h<<std::endl;
-
-	LCH_to_RGB(l,c,h,&r,&g,&b);
-	std::cout<<"rgb : "<<r<<", "<<g<<", "<<b<<std::endl;
-	return 1;
 }
