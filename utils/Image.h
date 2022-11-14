@@ -38,6 +38,14 @@ class Image{
 				pixels[i].r =0;pixels[i].g=0;pixels[i].b=0;
 			}
 		}
+		Image(int w,int h){
+			width = w;
+			height = h;
+			pixels.resize(w*h);
+			for(int i = 0;i<w*h;i++){
+				pixels[i].r =0;pixels[i].g=0;pixels[i].b=0;
+			}
+		}
 		std::vector<Pixel> pixels;
 		int height;
 		int width;
