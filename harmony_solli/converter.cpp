@@ -1,6 +1,9 @@
 #include <cmath>
+#include <iostream>
 
 const double pi = 3.141592653589793;
+
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!only RGB->LCH has been fixed yet !
 
 double gamma_expand(double value){
 	return value<=0.04045?(value/12.92)
@@ -139,9 +142,9 @@ void RGB_to_LCH(int R, int G, int B, double *L, double *C, double *H){
 	b=(double)B/(double)255;
 	
 	//gamma expansion
-	r = gamma_expand(r);
-	g = gamma_expand(g);
-	b = gamma_expand(b);
+	r = gamma_expand(r) * 100.;
+	g = gamma_expand(g) * 100.;
+	b = gamma_expand(b) * 100.;
 
 	//matrix multiplication
 	double X = 0.4124564*r +0.3575761*g +0.1804375*b;
@@ -155,14 +158,13 @@ void RGB_to_LCH(int R, int G, int B, double *L, double *C, double *H){
 
 	//then to LCH
 
-	double var_H = (pi+atan2(b_,a))*(360./(2.*pi));  //Quadrant by signs, turned into degrees
-
-
+	double var_H = atan(b_/a) * (180./pi);
+	std::cout<<"var h : "<<var_H<<"with mod : "<<int(var_H)%360<<std::endl;
+	var_H = var_H>0?var_H:360+var_H;
 	*L = l;
 	*C = sqrt(a*a+b_*b_);
 	*H = var_H;
 }
-
 void LCH_to_RGB(double l, double C, double H, int *r, int *g, int *b){
 	//convert to LAB
 	double H_rad = ((2.*pi)/360.)*H - pi;
@@ -263,4 +265,15 @@ void LCH_to_LAB(double *L, double *a, double *b){
 	double H_rad = ((2.*pi)/360.)*H - pi;
 	*a = C*cos(H_rad);
 	*b = C*sin(H_rad);
+}
+
+//il faudrait supprimer toutes les autres fonctions que rgb->lch.
+//dernier fix à faire : la composante H ne semble pas bonne.
+int main(){
+	int r,g,b;
+	r=1;g=20;b=220;
+	double l,c,h;
+	RGB_to_LCH(r,g,b,&l,&c,&h);
+	std::cout<<"lch : "<<l<<", "<<c<<", "<<h<<std::endl;
+	return 1;
 }

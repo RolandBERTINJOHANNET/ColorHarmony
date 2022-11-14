@@ -155,9 +155,6 @@ bool Block::iterator_inside_block(std::vector<Pixel*>::const_iterator iter){
 	return i<start_offsetx+block_size && i>=start_offsetx && j<start_offsety+block_size && j>=start_offsety;
 }
 
-
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   not checking for accessing mem outside of image because the block wouldn't have been created
-//	but I might be wrong.
 void Block::Merge(int min_size){
 	//std::cout<<"merging "<<block_label<<" out of "<<image->blocks.size()<<std::endl;
 	//call merge neighbor every min_size in both directions (along +-x, with directiony and along +-y, with directionx)
@@ -291,6 +288,51 @@ void Image::SplitAndMerge(int min_size){
 		block->Merge(min_size);
 	}
 	colorFromMerge();
+}
+
+std::string Image::classifyHarmony(){
+	//get histogram
+	std::vector<int> hist(16,0);
+	float ratio = 16./360.;
+	for(auto block : blocks){
+		unsigned char r,g,b;
+		r=(*block->start)->r;
+		g=(*block->start)->g;
+		b=(*block->start)->b;
+		double l,c,h;
+		RGB_to_LCH(r,g,b,&l,&c,&h);
+		if(l>20 && c>20){//if luminous and saturated enough
+			hist[int(h*ratio)]+= block->block_size*block->block_size;
+		}
+	}
+	std::vector<int> idxsort = argsort(hist);
+	//count the number of bins above 100 occurences in the 4 biggest
+	int ctr=0;
+	for(auto it = idxsort.begin()+12;it<idxsort.end();it++){
+		if(hist[(*it)]>6250){//hardcoded, images will be 256*256.
+			//std::cout<<"bin "<<(*it)<<" is above 100 occurences"<<std::endl;
+			ctr++;
+		}
+	}
+	//infer harmony type
+	if(ctr==1){
+		return std::string("mono");
+	}
+	else if(ctr==2){
+		int last=*(idxsort.begin()+15) /ratio;//hue of biggest bin
+		int lastbut1 = *(idxsort.begin()+14) / ratio;//hue of second biggest bin
+		std::cout<<"hues in two-color decision : "<<last<<", "<<lastbut1<<std::endl;
+		if (abs(last - lastbut1)>110){
+			return std::string("comp");
+		}
+		else return std::string("analog");
+	}
+	else if(ctr==3){
+		return std::string("triad");
+	}
+	else{
+		return std::string("rectangle");
+	}
 }
 
 float Image::computeHarmony(){
