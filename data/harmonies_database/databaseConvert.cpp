@@ -37,13 +37,10 @@ void convert_image(std::string filename, std::string type){
 		
 			RGB_to_LCH(r,g,b,&l,&c,&hue);
 
-			std::cout<<"w,h : "<<w<<", "<<h<<std::endl;
 
-			img_lch[i*w*3+h*3]=(int)l;
-			img_lch[i*w*3+h*3+1]=(int)c;
-			img_lch[i*w*3+h*3+2]=(int)hue;
-
-			std::cout<<"hue value : "<<(int)img_lch[i*w*3+h*3+2]<<std::endl;
+			img_lch[i*w*3+j*3]=(int)l;
+			img_lch[i*w*3+j*3+1]=(int)c;
+			img_lch[i*w*3+j*3+2]=(int)(float(hue) * (256./360.));
 		}
 	}
 	//save
@@ -53,17 +50,14 @@ void convert_image(std::string filename, std::string type){
 }
 
 int main(){
-
 	std::vector<std::string> types(5);
 	types[0]="mono";types[1]="analog";types[2]="comp";types[3]="triad";types[4]="rectangle";
 
 	for(auto type : types){
 		int i=0;
 	    for (const auto & file : directory_iterator(type)){
-	    	if(i<1){
-	    		convert_image(file.path().filename().string(),type);
-			}
-			i++;
-		}	
+	    	convert_image(file.path().filename().string(),type);
+		}
+		std::cout<<std::string("\nfinished ")+type+std::string(" directory")<<std::endl;
 	}
 }
