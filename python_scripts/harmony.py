@@ -47,13 +47,11 @@ def vote(vote1,vote2,vote3):#using votes 2 and 3 to check "impurities" in vote1
 	else:
 		return "unknown"
 
+def classifyAllImages():
+	data_dir_small = os.path.join(os.path.dirname(os.path.abspath(__file__)),"..\\script_database\\databaseOut3")
+	data_dir_big = os.path.join(os.path.dirname(os.path.abspath(__file__)),"..\\script_database\\databaseOut2")
+	out_dir =  os.path.join(os.path.dirname(os.path.abspath(__file__)),"..\\harmonies_database\\")
 
-data_dir_small = os.path.join(os.path.dirname(os.path.abspath(__file__)),"..\\script_database\\databaseOut3")
-data_dir_big = os.path.join(os.path.dirname(os.path.abspath(__file__)),"..\\script_database\\databaseOut2")
-out_dir =  os.path.join(os.path.dirname(os.path.abspath(__file__)),"..\\harmonies_database\\")
-
-#big images must be 256 by 256 and small images must be 50 by 50 for this to work well
-if __name__ == "__main__":
 	i=0
 	nb_conflicts = 0
 	votes3 = pd.read_csv("../split_merge/harmony_types.csv")
@@ -71,15 +69,45 @@ if __name__ == "__main__":
 				vote2 = getHarmonyType(bins_kmeans)
 				vote3 = votes3.loc[votes3["name"]=="00000000_(2).jpg"]["type"].values[0]
 
-				print("votes : ",vote1,vote2,vote3)
-
 				result = vote(vote1,vote2,vote3)
-				print("result : ",result)
 				if result=="unknown":
 					nb_conflicts+=1
 				else:
 					img = Image.open(data_dir_big+"/"+file).convert("RGB")
-					print("\n",i,"images done : ",out_dir+result+"/"+file)
 					i+=1
 					img.save(out_dir+result+"/"+file)
 	print("percentage of images where methods disagreed : ",100.*(nb_conflicts/float(len(os.listdir(data_dir_small)))))
+
+
+#big images must be 256 by 256 and small images must be 50 by 50 for this to work well
+if __name__ == "__main__":
+	data_dir_small = os.path.join(os.path.dirname(os.path.abspath(__file__)),"..\\harmonies_database\\temp\\mono_small")
+	data_dir_big = os.path.join(os.path.dirname(os.path.abspath(__file__)),"..\\harmonies_database\\mono")
+	out_dir =  os.path.join(os.path.dirname(os.path.abspath(__file__)),"..\\harmonies_database\\")
+
+	#test each file in data_dir with lower rejection threshold of cluster/bins sizes
+	#if different type, send to out_dir + type + filename
+
+	i=0
+	nb_conflicts = 0
+	votes3 = pd.read_csv("../split_merge/harmony_types.csv")
+	votes3.columns = ["name","type"]
+
+	for file in os.listdir(data_dir_small):
+		if file in votes3["name"].values:
+			img = Image.open(data_dir_small+"/"+file).convert("RGB")
+			bins_kmeans = getMainColors_kmeans(img)
+
+			print("did ",i,"images")
+
+			if bins_kmeans is not None:
+				vote = getHarmonyType(bins_kmeans)
+
+				i+=1
+
+				print("did ",i,"images, result : ",vote)
+				if vote != "mono":
+					img = Image.open(data_dir_big+"/"+file).convert("RGB")
+					os.remove(data_dir_big+"/"+file)
+					print("removing : ",data_dir_big+"/"+file)
+					img.save(out_dir+vote+"/"+file)

@@ -7,11 +7,15 @@ from colormath.color_objects import LCHabColor, sRGBColor
 from colormath.color_conversions import convert_color
 from colorExtraction import *
 
+COLOR_REJECTION_THRESHOLD = 1./10.
+GROUPING_ANGLE = 30
+
 def getMainColors_kmeans(img):
 	#extract hues and select those that matter
 	hues = []
-	img = np.array(img)
-	img = np.reshape(img,(img.shape[0]*img.shape[1],3))/255.
+	if type(img)!=type(np.zeros(0)):
+		img = np.array(img)
+		img = np.reshape(img,(img.shape[0]*img.shape[1],3))/255.
 	for pixel in np.array(img):
 		rgb = sRGBColor(pixel[0],pixel[1],pixel[2])
 		LCH_color = convert_color(rgb, LCHabColor)
@@ -44,7 +48,7 @@ def getMainColors_kmeans(img):
 			cluster_sizes.remove(cluster_sizes[i])
 			j=0
 			while j<len(colors):
-				if abs(hue - colors[j])<65:
+				if abs(hue - colors[j])<GROUPING_ANGLE:
 					similar_colors.append(colors[j])
 					sim_cols_clsiz.append(cluster_sizes[j])
 					colors.remove(colors[j])
@@ -58,7 +62,7 @@ def getMainColors_kmeans(img):
 
 
 		#take only the sufficiently big clusters.
-		bins = [b for (b,c) in zip(bins,bins_sizes) if c>50]
+		bins = [b for (b,c) in zip(bins,bins_sizes) if c>len(hues)*COLOR_REJECTION_THRESHOLD]
 		#print("after elimination of small clusters : ",bins)
 		return bins
 	else:
@@ -69,8 +73,9 @@ def getMainColors_kmeans(img):
 def getMainColors_frequencies(img):
 	#extract hues and select those that matter
 	hues = []
-	img = np.array(img)
-	img = np.reshape(img,(img.shape[0]*img.shape[1],3))/255.
+	if type(img)!=type(np.zeros(0)):
+		img = np.array(img)
+		img = np.reshape(img,(img.shape[0]*img.shape[1],3))/255.
 	for pixel in np.array(img):
 		rgb = sRGBColor(pixel[0],pixel[1],pixel[2])
 		LCH_color = convert_color(rgb, LCHabColor)
@@ -100,7 +105,7 @@ def getMainColors_frequencies(img):
 
 
 		#take only the sufficiently big clusters.
-		bins = [b for (b,c) in zip(colors,frequencies) if c>100]
+		bins = [b for (b,c) in zip(colors,frequencies) if c>len(hues)*COLOR_REJECTION_THRESHOLD]
 		#print("after elimination of small bins : ",bins)
 		return bins
 	else:
