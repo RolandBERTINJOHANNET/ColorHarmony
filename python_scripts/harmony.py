@@ -81,8 +81,8 @@ def classifyAllImages():
 
 #big images must be 256 by 256 and small images must be 50 by 50 for this to work well
 if __name__ == "__main__":
-	data_dir_small = os.path.join(os.path.dirname(os.path.abspath(__file__)),"..\\harmonies_database\\temp\\mono_small")
-	data_dir_big = os.path.join(os.path.dirname(os.path.abspath(__file__)),"..\\harmonies_database\\mono")
+	data_dir_small = os.path.join(os.path.dirname(os.path.abspath(__file__)),"..\\harmonies_database\\temp\\comp_small")
+	data_dir_big = os.path.join(os.path.dirname(os.path.abspath(__file__)),"..\\harmonies_database\\comp")
 	out_dir =  os.path.join(os.path.dirname(os.path.abspath(__file__)),"..\\harmonies_database\\")
 
 	#test each file in data_dir with lower rejection threshold of cluster/bins sizes
@@ -106,7 +106,7 @@ if __name__ == "__main__":
 				i+=1
 
 				print("did ",i,"images, result : ",vote)
-				if vote != "mono":
+				if vote != "comp" and vote !="mono":
 					img = Image.open(data_dir_big+"/"+file).convert("RGB")
 					os.remove(data_dir_big+"/"+file)
 					print("removing : ",data_dir_big+"/"+file)

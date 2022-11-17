@@ -8,7 +8,7 @@ from colormath.color_conversions import convert_color
 from colorExtraction import *
 
 COLOR_REJECTION_THRESHOLD = 1./10.
-GROUPING_ANGLE = 30
+GROUPING_ANGLE = 20
 
 def getMainColors_kmeans(img):
 	#extract hues and select those that matter

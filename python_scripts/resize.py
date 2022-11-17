@@ -1,8 +1,8 @@
 from PIL import Image, ImageOps
 import os
 
-dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),"..\\harmonies_database\\mono")
-dirOut = os.path.join(os.path.dirname(os.path.abspath(__file__)),"..\\harmonies_database\\temp\\mono_small")
+dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),"..\\harmonies_database\\comp")
+dirOut = os.path.join(os.path.dirname(os.path.abspath(__file__)),"..\\harmonies_database\\temp\\comp_small")
 size = 50
 print("running")
 
