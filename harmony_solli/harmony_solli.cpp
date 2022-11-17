@@ -45,8 +45,6 @@ double compute_harmony(int r1, int g1, int b1, int r2, int g2, int b2){
 	double L1,C1,H1,L2,C2,H2;
 	RGB_to_LCH(r1,g1,b1,&L1,&C1,&H1);
 	RGB_to_LCH(r2,g2,b2,&L2,&C2,&H2);
-	std::cout<<"1 : "<<L1<<", "<<C1<<", "<<H1<<std::endl;
-	std::cout<<"1 : "<<L2<<", "<<C2<<", "<<H2<<std::endl;
 	return Hc(C1,H1,C2,H2) + 
 			Hl(L1,L2) + 
 			Hh(L1,C1,H1,L2,C2,H2);

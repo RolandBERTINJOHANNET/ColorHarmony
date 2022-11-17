@@ -10,7 +10,7 @@ using namespace std;
 
 
 void compute_harmony_folder(string harmonyType,string fout){
-	string path = "../script_database/databaseOut2" + harmonyType + "/";
+	string path = "../harmonies_database/" + harmonyType + "/";
 	std::ofstream f;
     f.open(fout,std::ios::app);
 
@@ -56,8 +56,8 @@ void classify_harmony_folder(string harmonyType,string fout){
 }
 
 int main(void){
-    //compute_harmony_folder("comp" ,"harmonies_data.csv");
-    classify_harmony_folder("comp", "harmony_types.csv");
+    compute_harmony_folder("triad" ,"harmonies_data.csv");
+    //classify_harmony_folder("comp", "harmony_types.csv");
 	
 	
 }
