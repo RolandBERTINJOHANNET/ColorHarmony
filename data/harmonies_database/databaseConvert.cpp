@@ -50,8 +50,8 @@ void convert_image(std::string filename, std::string type){
 }
 
 int main(){
-	std::vector<std::string> types(5);
-	types[0]="mono";types[1]="analog";types[2]="comp";types[3]="triad";types[4]="rectangle";
+	std::vector<std::string> types(6);
+	types[0]="mono";types[1]="analog";types[2]="comp";types[3]="triad";types[4]="rectangle";types[5]="unknown";
 
 	for(auto type : types){
 		int i=0;

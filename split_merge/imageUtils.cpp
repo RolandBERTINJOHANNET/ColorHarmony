@@ -335,7 +335,15 @@ std::string Image::classifyHarmony(){
 	}
 }
 
-float Image::computeHarmony(){
+float Image::computeHarmony(bool use_solli){
+	//if we're using the case-based method, load the data
+
+	std::vector<float> CSVData;
+	if(!use_solli){
+		CSVData = readCSV("../harmony_yang/PairPlusPrediction.csv");
+		std::cout<<"using yang method for harmony scoring"<<std::endl;
+	}
+
 	//total harmony accumulator
 	double totalHarm = 0.;
 	unsigned int totalMult = 0;//for normalization
@@ -373,9 +381,18 @@ float Image::computeHarmony(){
 			auto list = blockGroups[i];
 			for(auto list2 : blockGroups){
 				if(list2[0]->block_label != list[0]->block_label){//don't garmonize with self
-					//function is in the harmony_solli.cpp file.
-					double hmn = compute_harmony((*(list2[0]->start))->r,(*(list2[0]->start))->g,(*(list2[0]->start))->b,
-									(*(list[0]->start))->r,(*(list[0]->start))->g,(*(list[0]->start))->b);
+					double hmn;
+					if(use_solli){
+						//function is in the harmony_solli.cpp file.
+						hmn = compute_harmony((*(list2[0]->start))->r,(*(list2[0]->start))->g,(*(list2[0]->start))->b,
+										(*(list[0]->start))->r,(*(list[0]->start))->g,(*(list[0]->start))->b);
+					}else{
+						double l2,c2,h2;
+						RGB_to_LCH((*(list2[0]->start))->r,(*(list2[0]->start))->g,(*(list2[0]->start))->b,&l2,&c2,&h2);
+						double l,c,h;
+						RGB_to_LCH((*(list[0]->start))->r,(*(list[0]->start))->g,(*(list[0]->start))->b,&l,&c,&h);
+						hmn = predictionFromCSV(h,h2,CSVData);
+					}
 					//std::cout<<"harmony between blocks "<<list[0]->block_label<<" and "<<list2[0]->block_label<<" is : "<<hmn<<std::endl;
 					totalHarm += hmn * sizes[i];
 					totalMult+=sizes[i];

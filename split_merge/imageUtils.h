@@ -56,7 +56,7 @@ public:
 	void save(const char *filename);
 	void colorFromMerge();
 	void SplitAndMerge(int min_size);
-	float computeHarmony();
+	float computeHarmony(bool use_solli);
 	std::string classifyHarmony();
 
 };

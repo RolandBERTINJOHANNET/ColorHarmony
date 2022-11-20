@@ -9,7 +9,7 @@ using std::filesystem::directory_iterator;
 using namespace std;
 
 
-void compute_harmony_folder(string harmonyType,string fout){
+void compute_harmony_folder(string harmonyType,string fout,bool use_solli){
 	string path = "../harmonies_database/" + harmonyType + "/";
 	std::ofstream f;
     f.open(fout,std::ios::app);
@@ -25,7 +25,7 @@ void compute_harmony_folder(string harmonyType,string fout){
 			img.SplitAndMerge(4);
 			img.save("out.png");
 			std::cout<<"SplitAndMerge"<<std::endl;
-			double harm = img.computeHarmony();
+			double harm = img.computeHarmony(use_solli);
 			std::cout<<"total harmony is : "<<harm<<std::endl;
 			f<<harmonyType<<","<<harm<<std::endl;
 		}
@@ -56,8 +56,9 @@ void classify_harmony_folder(string harmonyType,string fout){
 }
 
 int main(void){
-    compute_harmony_folder("triad" ,"harmonies_data.csv");
+    //compute_harmony_folder("triad" ,"harmonies_data.csv",False);
     //classify_harmony_folder("comp", "harmony_types.csv");
-	
-	
+
+
+    compute_harmony_folder("comp" ,"harmonies_data_2.csv",false);
 }
