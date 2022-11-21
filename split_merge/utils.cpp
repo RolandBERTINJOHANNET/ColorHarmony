@@ -12,7 +12,7 @@ std::vector<int> argsort(const std::vector<int> &array) {
     return indices;
 }
 
-
+//for reading the PairsPlusPredictions.csv file.
 std::vector<float> readCSV(std::string filename){
   std::vector<float> result;
   std::string line,word;
@@ -38,7 +38,6 @@ std::vector<float> readCSV(std::string filename){
         }else break;
       }
       i++;
-
     }
   }
   return result;
