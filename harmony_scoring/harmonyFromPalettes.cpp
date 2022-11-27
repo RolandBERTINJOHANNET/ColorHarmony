@@ -3,7 +3,7 @@
 //for the solli harmony prediction
 #include "../harmony_scoring/harmony_solli/harmony_solli.cpp"
 //for the yang harmony prediction
-#include "../split_merge/utils.cpp"
+#include "split_merge/utils.cpp"
 
 //-------------------------------------------------------------------------------------------------------------------
 //what the code does : 
@@ -53,7 +53,7 @@ float prediction_from_palette(std::vector<float> palette, std::vector<float> CSV
 		}
 	}
 
-	std::cout<<"using "<<(use_solli?"solli, ":"yang, ")<<" final score prediction : "<<MLEScore/5.<<std::endl;
+	std::cout<<"using "<<(use_solli?"solli, ":"yang, ")<<" final score prediction : "<<MLEScore/4.<<std::endl;
 	return MLEScore/4.;//the palette length will never not be 5 colors.
 }
 
@@ -96,8 +96,8 @@ int main(){
 	//the csv file for yang et al. is "../harmony_scoring/harmony_yang/pairPlusPrediction.csv"
 	//the csv file for the RGB palettes is "../harmony_scoring/harmony_yang/palettes.csv"
 
-	std::vector<float> CSVData = readCSV("../harmony_scoring/harmony_yang/pairPlusPrediction.csv");
-	std::vector<float> RGBPalettes = readPalettes("../harmony_scoring/harmony_yang/palettes.csv");
+	std::vector<float> CSVData = readCSV("../harmony_scoring/harmony_yang/pairPlusPredictionKuler.csv");
+	std::vector<float> RGBPalettes = readPalettes("../harmony_scoring/harmony_yang/palettesKuler.csv");
 	
 	//writing the computed palette scores to "harmony_yang/paletteScoresKuler.csv" and "harmony_solli/paletteScoresKuler.csv"
 	std::string pathSol = "harmony_solli/paletteScoresKuler.csv";

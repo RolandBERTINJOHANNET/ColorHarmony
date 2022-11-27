@@ -3,7 +3,7 @@ import numpy as np
 from colormath.color_objects import LCHabColor, sRGBColor
 from colormath.color_conversions import convert_color
 
-filename = "mturkData.mat"
+filename = "kulerData.mat"
 
 #load data
 
@@ -12,8 +12,8 @@ mat = io.loadmat(filename)
 palettes_shape = np.array(mat["data"]).shape
 scores_shape = np.array(mat["targets"]).shape
 
-palettes = np.loadtxt("palettes.csv", delimiter=",").reshape(palettes_shape)
-scores = np.loadtxt("scores.csv", delimiter=",").reshape(scores_shape)
+palettes = np.loadtxt("palettesKuler.csv", delimiter=",").reshape(palettes_shape)
+scores = np.loadtxt("scoresKuler.csv", delimiter=",").reshape(scores_shape)
 
 #replace palette colors with LCH hues
 huePalettes = []
@@ -64,4 +64,4 @@ for p,sc in list(zip(pairs,pairScores)):
 pairPlusPrediction = np.array(pairPlusPrediction)
 
 #write it to a file
-np.savetxt("pairPlusPrediction.csv",pairPlusPrediction,delimiter=",")
+np.savetxt("pairPlusPredictionKuler.csv",pairPlusPrediction,delimiter=",")
