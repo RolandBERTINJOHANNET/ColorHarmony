@@ -3,25 +3,25 @@
 #define DOWN_SIZE 256
 
 struct Pixel{
-	int r,g,b;
+	int l,c,h;
 
 	void operator+=(Pixel a){
-		r+=a.r;
-		g+=a.g;
-		b+=a.b;
+		l+=a.l;
+		c+=a.c;
+		h+=a.h;
 	}
 
 	void operator/=(float f){
-		r/=f;
-		g/=f;
-		b/=f;
+		l/=f;
+		c/=f;
+		h/=f;
 	}
 
 	Pixel operator*(const float f) const {
 		Pixel res;
-		res.r = r*f;
-		res.g = r*g;
-		res.b = r*b;
+		res.l = l*f;
+		res.c = l*c;
+		res.h = l*h;
 		return res;
 	}
 };
@@ -35,7 +35,7 @@ class Image{
 			height = size;
 			pixels.resize(size*size);
 			for(int i = 0;i<size;i++){
-				pixels[i].r =0;pixels[i].g=0;pixels[i].b=0;
+				pixels[i].l =0;pixels[i].c=0;pixels[i].h=0;
 			}
 		}
 		Image(int w,int h){
@@ -43,12 +43,14 @@ class Image{
 			height = h;
 			pixels.resize(w*h);
 			for(int i = 0;i<w*h;i++){
-				pixels[i].r =0;pixels[i].g=0;pixels[i].b=0;
+				pixels[i].l =0;pixels[i].c=0;pixels[i].h=0;
 			}
 		}
 		std::vector<Pixel> pixels;
 		int height;
 		int width;
 		void readfile(const char* filename);
+		void readfile_LCH(const char* filename);
 		void writefile(const char* filename);
+		void writefile_LCH(const char* filename);
 };

@@ -4,6 +4,7 @@
 #include "sample.h"
 
 
+
 class Sampler{
 private:
 	int w,h;
@@ -78,3 +79,4 @@ public:
 
 
 };
+
