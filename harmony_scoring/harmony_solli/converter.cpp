@@ -19,6 +19,34 @@ unsigned char expand_to_byte(double value){
     return (unsigned char)oct;
 }
 
+unsigned char real_to_byte(double value,double min, double max, bool verbose){
+	if(verbose)
+		std::cout<<"start : "<<value;
+	int res = (value/(max-min)) * 255;
+	if(verbose)
+	std::cout<<"  before clip : "<< res<<std::endl;
+	res = res>255?255:res;
+	res = res<0?0:res;
+	return (unsigned char)res;
+}
+
+double byte_to_real(unsigned char value,double min, double max, bool verbose){
+	if(verbose)
+		std::cout<<"start : "<< (int)value;
+	double res = (double)value *(max-min) /255;
+
+	if(verbose)
+		std::cout<<"  after clip : "<< res<<std::endl;
+	return res;
+}
+
+
+unsigned char quantify(unsigned char value,int in_max, int out_max){
+	unsigned char res = (unsigned char)(value *((float)in_max /out_max));
+	return res;
+}
+
+
 
 double LABfun(double value){
 	double delta = 6./29.;
