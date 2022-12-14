@@ -1,0 +1,39 @@
+﻿  pch.cpp
+  converter.cpp
+C:\Users\benj2\Unity\colorHarmony\ColorHarmony\SamplerDLL\SamplerDLL\SamplerDLL\converter.cpp(18,10): warning C4244: 'initialisation' : conversion de 'double' en 'int', perte possible de données
+C:\Users\benj2\Unity\colorHarmony\ColorHarmony\SamplerDLL\SamplerDLL\SamplerDLL\converter.cpp(25,10): warning C4244: 'initialisation' : conversion de 'double' en 'int', perte possible de données
+  dllmain.cpp
+  Image.cpp
+C:\Users\benj2\Unity\colorHarmony\ColorHarmony\SamplerDLL\SamplerDLL\SamplerDLL\Image.h(15,6): warning C4244: '/=' : conversion de 'float' en 'int', perte possible de données
+C:\Users\benj2\Unity\colorHarmony\ColorHarmony\SamplerDLL\SamplerDLL\SamplerDLL\Image.h(16,6): warning C4244: '/=' : conversion de 'float' en 'int', perte possible de données
+C:\Users\benj2\Unity\colorHarmony\ColorHarmony\SamplerDLL\SamplerDLL\SamplerDLL\Image.h(17,6): warning C4244: '/=' : conversion de 'float' en 'int', perte possible de données
+C:\Users\benj2\Unity\colorHarmony\ColorHarmony\SamplerDLL\SamplerDLL\SamplerDLL\Image.h(22,12): warning C4244: '=' : conversion de 'float' en 'int', perte possible de données
+C:\Users\benj2\Unity\colorHarmony\ColorHarmony\SamplerDLL\SamplerDLL\SamplerDLL\Image.cpp(65,10): warning C4101: 'h' : variable locale non référencée
+  Sampler.cpp
+C:\Users\benj2\Unity\colorHarmony\ColorHarmony\SamplerDLL\SamplerDLL\SamplerDLL\Image.h(15,6): warning C4244: '/=' : conversion de 'float' en 'int', perte possible de données
+C:\Users\benj2\Unity\colorHarmony\ColorHarmony\SamplerDLL\SamplerDLL\SamplerDLL\Image.h(16,6): warning C4244: '/=' : conversion de 'float' en 'int', perte possible de données
+C:\Users\benj2\Unity\colorHarmony\ColorHarmony\SamplerDLL\SamplerDLL\SamplerDLL\Image.h(17,6): warning C4244: '/=' : conversion de 'float' en 'int', perte possible de données
+C:\Users\benj2\Unity\colorHarmony\ColorHarmony\SamplerDLL\SamplerDLL\SamplerDLL\Image.h(22,12): warning C4244: '=' : conversion de 'float' en 'int', perte possible de données
+C:\Users\benj2\Unity\colorHarmony\ColorHarmony\SamplerDLL\SamplerDLL\SamplerDLL\sample.h(38,16): warning C4244: '=' : conversion de 'float' en 'int', perte possible de données
+C:\Users\benj2\Unity\colorHarmony\ColorHarmony\SamplerDLL\SamplerDLL\SamplerDLL\sample.h(40,18): warning C4244: '=' : conversion de 'float' en 'int', perte possible de données
+C:\Users\benj2\Unity\colorHarmony\ColorHarmony\SamplerDLL\SamplerDLL\SamplerDLL\sample.h(61,16): warning C4244: '=' : conversion de 'float' en 'int', perte possible de données
+C:\Users\benj2\Unity\colorHarmony\ColorHarmony\SamplerDLL\SamplerDLL\SamplerDLL\sample.h(63,18): warning C4244: '=' : conversion de 'float' en 'int', perte possible de données
+C:\Users\benj2\Unity\colorHarmony\ColorHarmony\SamplerDLL\SamplerDLL\SamplerDLL\sample.h(65,18): warning C4244: '+=' : conversion de 'double' en 'int', perte possible de données
+C:\Users\benj2\Unity\colorHarmony\ColorHarmony\SamplerDLL\SamplerDLL\SamplerDLL\sample.h(66,19): warning C4244: '+=' : conversion de 'double' en 'int', perte possible de données
+C:\Users\benj2\Unity\colorHarmony\ColorHarmony\SamplerDLL\SamplerDLL\SamplerDLL\sample.h(102,13): warning C4244: '=' : conversion de 'float' en 'int', perte possible de données
+C:\Users\benj2\Unity\colorHarmony\ColorHarmony\SamplerDLL\SamplerDLL\SamplerDLL\sample.h(103,13): warning C4244: '=' : conversion de 'float' en 'int', perte possible de données
+C:\Users\benj2\Unity\colorHarmony\ColorHarmony\SamplerDLL\SamplerDLL\SamplerDLL\sample.h(160,14): warning C4244: 'initialisation' : conversion de 'double' en 'int16_t', perte possible de données
+C:\Users\benj2\Unity\colorHarmony\ColorHarmony\SamplerDLL\SamplerDLL\SamplerDLL\sample.h(161,14): warning C4244: 'initialisation' : conversion de 'double' en 'int16_t', perte possible de données
+C:\Users\benj2\Unity\colorHarmony\ColorHarmony\SamplerDLL\SamplerDLL\SamplerDLL\sample.h(227,58): warning C4244: '+=' : conversion de 'float' en 'int', perte possible de données
+C:\Users\benj2\Unity\colorHarmony\ColorHarmony\SamplerDLL\SamplerDLL\SamplerDLL\sample.h(228,58): warning C4244: '+=' : conversion de 'float' en 'int', perte possible de données
+C:\Users\benj2\Unity\colorHarmony\ColorHarmony\SamplerDLL\SamplerDLL\SamplerDLL\sample.h(229,58): warning C4244: '+=' : conversion de 'float' en 'int', perte possible de données
+C:\Users\benj2\Unity\colorHarmony\ColorHarmony\SamplerDLL\SamplerDLL\SamplerDLL\sample.h(239,14): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
+C:\Users\benj2\Unity\colorHarmony\ColorHarmony\SamplerDLL\SamplerDLL\SamplerDLL\sample.h(258,11): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
+C:\Users\benj2\Unity\colorHarmony\ColorHarmony\SamplerDLL\SamplerDLL\SamplerDLL\sample.h(310,59): warning C4244: '+=' : conversion de 'float' en 'int', perte possible de données
+C:\Users\benj2\Unity\colorHarmony\ColorHarmony\SamplerDLL\SamplerDLL\SamplerDLL\sample.h(311,59): warning C4244: '+=' : conversion de 'float' en 'int', perte possible de données
+C:\Users\benj2\Unity\colorHarmony\ColorHarmony\SamplerDLL\SamplerDLL\SamplerDLL\sample.h(312,59): warning C4244: '+=' : conversion de 'float' en 'int', perte possible de données
+C:\Users\benj2\Unity\colorHarmony\ColorHarmony\SamplerDLL\SamplerDLL\SamplerDLL\sample.h(322,14): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
+C:\Users\benj2\Unity\colorHarmony\ColorHarmony\SamplerDLL\SamplerDLL\SamplerDLL\sample.h(341,11): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
+  Génération de code en cours...
+     Création de la bibliothèque C:\Users\benj2\Unity\colorHarmony\ColorHarmony\SamplerDLL\SamplerDLL\x64\Debug\SamplerDLL.lib et de l'objet C:\Users\benj2\Unity\colorHarmony\ColorHarmony\SamplerDLL\SamplerDLL\x64\Debug\SamplerDLL.exp
+  SamplerDLL.vcxproj -> C:\Users\benj2\Unity\colorHarmony\ColorHarmony\SamplerDLL\SamplerDLL\x64\Debug\SamplerDLL.dll

@@ -5,19 +5,15 @@ from PyQt5.QtGui import QIcon
 from ctypes import *
 from PIL import Image, ImageQt
 import numpy as np
-#from runModel import *
+from runModel import *
 import ctypes 
 
-"""
-ctypes.CDLL('./libsampler.so', mode=1)
-lib = cdll.LoadLibrary('./libsampler.so')
+ctypes.CDLL('./SamplerDLL.dll', mode=1)
+lib = cdll.LoadLibrary('././SamplerDLL.dll')
 lib.Sampler_new.restype  = ctypes.c_void_p
 lib.Sampler_resize_GAN.argtypes = [ctypes.c_void_p]
 lib.Sampler_loadHarmo.argtypes = [ctypes.c_void_p,ctypes.c_void_p]
 lib.Sampler_buildImage.argtypes = [ctypes.c_void_p]
-"""
-def run_model(a,b):
-    return b
 
 class Sampler(object):
     def __init__(self,filename):
@@ -101,31 +97,61 @@ class Ui_MainWindow(object):
         self.rect.setText(_translate("ColorHarmony", "rectangle"))
     
     def apply_mono(self):
+        self.image = np.array(Image.open("downscaled.png"))
         table = run_model("mono",self.image)
-        img = Image.fromarray(table, mode='RGB')
-        self.qt_res = ImageQt.ImageQt(img)
+        print(np.min(table),np.max(table))
+        np.shape(table)
+        img = Image.fromarray((table*255.).astype(np.uint8))
+        img.save("temp.png")
+        self.sampler.loadHarmonizedImage(b'temp.png')
+        self.sampler.upscale()
+        self.qt_res = ImageQt.ImageQt(Image.open("result.png"))
         self.result.setPixmap(QtGui.QPixmap.fromImage(self.qt_res))
         
     def apply_anal(self):
+        self.image = np.array(Image.open("downscaled.png"))
         table = run_model("analog",self.image)
-        img = Image.fromarray(table, mode='RGB')
-        self.qt_res = ImageQt.ImageQt(img)
+        print(np.min(table),np.max(table))
+        np.shape(table)
+        img = Image.fromarray((table*255.).astype(np.uint8))
+        img.save("temp.png")
+        self.sampler.loadHarmonizedImage(b'temp.png')
+        self.sampler.upscale()
+        self.qt_res = ImageQt.ImageQt(Image.open("result.png"))
         self.result.setPixmap(QtGui.QPixmap.fromImage(self.qt_res))
         
     def apply_comp(self):
+        self.image = np.array(Image.open("downscaled.png"))
         table = run_model("comp",self.image)
-        img = Image.fromarray(table, mode='RGB')
-        self.qt_res = ImageQt.ImageQt(img)
+        print(np.min(table),np.max(table))
+        np.shape(table)
+        img = Image.fromarray((table*255.).astype(np.uint8))
+        img.save("temp.png")
+        self.sampler.loadHarmonizedImage(b'temp.png')
+        self.sampler.upscale()
+        self.qt_res = ImageQt.ImageQt(Image.open("result.png"))
         self.result.setPixmap(QtGui.QPixmap.fromImage(self.qt_res))
     def apply_tri(self):
+        self.image = np.array(Image.open("downscaled.png"))
         table = run_model("triad",self.image)
-        img = Image.fromarray(table, mode='RGB')
-        self.qt_res = ImageQt.ImageQt(img)
+        print(np.min(table),np.max(table))
+        np.shape(table)
+        img = Image.fromarray((table*255.).astype(np.uint8))
+        img.save("temp.png")
+        self.sampler.loadHarmonizedImage(b'temp.png')
+        self.sampler.upscale()
+        self.qt_res = ImageQt.ImageQt(Image.open("result.png"))
         self.result.setPixmap(QtGui.QPixmap.fromImage(self.qt_res))
     def apply_rect(self):
+        self.image = np.array(Image.open("downscaled.png"))
         table = run_model("rect",self.image)
-        img = Image.fromarray(table, mode='RGB')
-        self.qt_res = ImageQt.ImageQt(img)
+        print(np.min(table),np.max(table))
+        np.shape(table)
+        img = Image.fromarray((table*255.).astype(np.uint8))
+        img.save("temp.png")
+        self.sampler.loadHarmonizedImage(b'temp.png')
+        self.sampler.upscale()
+        self.qt_res = ImageQt.ImageQt(Image.open("result.png"))
         self.result.setPixmap(QtGui.QPixmap.fromImage(self.qt_res))
     def open_image(self):
         print("dialog ouvert")
@@ -140,8 +166,10 @@ class Ui_MainWindow(object):
             print("image convertie")
             self.photo.setPixmap(QtGui.QPixmap.fromImage(self.qt_img))
             print("image set")
-            self.image = np.array(img)
-            print("tableau set")
+
+            self.sampler = Sampler(bytes(file,'UTF-8'))
+            self.sampler.downscale()
+
         
 
         
