@@ -1,6 +1,8 @@
 # ColorHarmony
 Aiming to explore solutions for image color harmonisation using style transfer, traditional methods and CNNs
 
+(veuillez trouver dans le dossier Compte-rendus, les slides pour les deux oraux ainsi que les 6 compte-rendus.) 
+
 # Usage
 Current build is for windows, please contact us if you need a linux app.
 
