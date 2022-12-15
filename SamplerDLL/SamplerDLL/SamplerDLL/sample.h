@@ -16,7 +16,7 @@ void downsample(const Image* in, Image* out){
 	float hratio = (float)hIn/hOut;
 	float wratio = (float)wIn/wOut;
 	
-	if(hratio<1||wratio<1){
+	if(hratio<0.999999||wratio< 0.999999){
 		std::cout<<"Upsampling not supported yet"<<std::endl;
 		std::cout << "height = " << hIn << "width = " << wIn << std::endl;
 		return;

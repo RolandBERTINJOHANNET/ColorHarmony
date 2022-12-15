@@ -122,7 +122,7 @@ class Ui_MainWindow(object):
         
     def apply_comp(self):
         self.image = np.array(Image.open("downscaled.png"))
-        table = run_model("comp",self.image)
+        table = run_model("comp_wasserstein",self.image)
         print(np.min(table),np.max(table))
         np.shape(table)
         img = Image.fromarray((table*255.).astype(np.uint8))
@@ -144,7 +144,7 @@ class Ui_MainWindow(object):
         self.result.setPixmap(QtGui.QPixmap.fromImage(self.qt_res))
     def apply_rect(self):
         self.image = np.array(Image.open("downscaled.png"))
-        table = run_model("rect",self.image)
+        table = run_model("rect_wasserstein",self.image)
         print(np.min(table),np.max(table))
         np.shape(table)
         img = Image.fromarray((table*255.).astype(np.uint8))
@@ -156,7 +156,7 @@ class Ui_MainWindow(object):
     def open_image(self):
         print("dialog ouvert")
         file , check = QFileDialog.getOpenFileName(self.mw, "QFileDialog.getOpenFileName()",
-                                               "", "All Files (*);;Png Files (*.png);;Jpg Files (*.jpg)")
+                                               "", "Png Files (*.png);;Jpg Files (*.jpg)")
         if check:
             self.filename = file
             print("image trouvee")

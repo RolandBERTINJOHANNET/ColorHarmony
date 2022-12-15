@@ -16,11 +16,9 @@ public:
 
 	Sampler(const char* filename){
 		original = new Image();
-		std::cout << filename << std::endl;
 		original->readfile(filename);
 		w = original->width;
 		h = original->height;
-		std::cout << w<<" "<<h << std::endl;
 	}
 
 	void resize_GAN(){
